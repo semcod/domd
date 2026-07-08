@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
@@ -54,7 +55,7 @@ class BaseFormatter(ABC):
         try:
             output_path.write_text(formatted, encoding="utf-8")
             logger.info("Report written to %s", output_path)
-        except IOError as e:
+        except OSError as e:
             logger.error("Failed to write report to %s: %s", output_path, e)
             raise
 

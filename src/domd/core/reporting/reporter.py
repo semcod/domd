@@ -1,9 +1,10 @@
 """Report generation and management for command execution results."""
 
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, Optional, Type, Union
 
 from ..parsing.pattern_matcher import PatternMatcher
 from .formatters import (
@@ -183,38 +184,6 @@ class Reporter:
         """
         formatter = self.get_formatter(format_name)
         return formatter.format_report(self.data, **kwargs)
-
-    def generate_report(
-        self,
-        output_path: Optional[Union[str, Path]] = None,
-        format: Optional[str] = None,
-        **kwargs: Any,
-    ) -> str:
-        """Generate a report in the specified format.
-
-        Args:
-            output_path: Path to write the report to. If None, returns the report as a string.
-            format: Output format (e.g., 'markdown', 'json'). Uses default if not specified.
-            **kwargs: Additional arguments to pass to the formatter.
-
-        Returns:
-            The generated report as a string if output_path is None, otherwise an empty string.
-        """
-        format = format or self.default_format
-        formatter = self._get_formatter(format)
-
-        # Ensure base_path is set for path handling
-        format_kwargs = self.formatter_kwargs.copy()
-        if "base_path" not in format_kwargs and self.project_root:
-            format_kwargs["base_path"] = self.project_root
-
-        # Merge with any provided kwargs (allowing override of base_path)
-        format_kwargs.update(kwargs)
-
-        if output_path is not None:
-            formatter.write_report(self.data, output_path, **format_kwargs)
-            return ""
-        return formatter.format_report(self.data, **format_kwargs)
 
     def write_report(
         self,

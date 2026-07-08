@@ -1,8 +1,5 @@
 """Tests for .dodocker file handling."""
 
-import os
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 from domd.core.command_execution.command_runner import CommandRunner
@@ -75,9 +72,6 @@ class TestDodockerHandling:
 
     def test_dodocker_commands_parsing(self, temp_project, mock_command_executor):
         """Test that .dodocker commands are correctly parsed."""
-        # Setup
-        command_runner = CommandRunner(executor=mock_command_executor)
-
         # The test needs to be adjusted since we're not testing the actual CommandHandler
         # but rather the behavior of the command runner with our mock executor
         assert True  # Placeholder assertion - the actual test needs to be rewritten

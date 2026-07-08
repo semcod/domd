@@ -2,8 +2,7 @@
 
 import logging
 import re
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List
 
 from domd.core.parsing.base import BaseParser
 
@@ -31,9 +30,6 @@ class MarkdownParser(BaseParser):
             return []
 
         commands = []
-        in_code_block = False
-        current_command = ""
-        current_lang = ""
 
         # Look for code blocks with bash, shell, or no language specified
         code_block_pattern = re.compile(

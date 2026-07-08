@@ -2,7 +2,7 @@
 
 import datetime
 from pathlib import Path
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 
 from .base import BaseReporter
 

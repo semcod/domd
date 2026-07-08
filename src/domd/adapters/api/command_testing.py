@@ -2,11 +2,12 @@
 REST API endpoints for command testing functionality.
 """
 
-from pathlib import Path
-from typing import Dict, List, Optional
+import logging
 
-from flask import jsonify, request
-from werkzeug.exceptions import BadRequest, NotFound
+from flask import request
+from werkzeug.exceptions import BadRequest
+
+logger = logging.getLogger(__name__)
 
 
 def register_command_testing_routes(api, command_handler):
