@@ -11,7 +11,7 @@ maintainers = [
 ]
 license = "Apache-2.0"
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "pyyaml>=6.0",
     "toml>=0.10.2",
@@ -89,8 +89,6 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: System :: Systems Administration",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -108,7 +106,7 @@ classifiers = [
 "Documentation" = "https://wronai.github.io/domd"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
+python = ">=3.10,<4.0"
 pyyaml = "^6.0"
 toml = "^0.10.2"
 
@@ -221,7 +219,7 @@ line_length = 88
 known_first_party = ["domd"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
