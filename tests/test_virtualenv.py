@@ -166,12 +166,10 @@ def test_execute_command_with_env_vars(venv_project):
     import tempfile
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-        f.write(
-            """
+        f.write("""
 import os
 print(os.environ.get("CUSTOM_VAR", "NOT_FOUND"), end="")
-"""
-        )
+""")
         script_path = f.name
 
     try:

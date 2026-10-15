@@ -16,33 +16,27 @@ class TestAnsiblePlaybookDetection:
         playbook_dir = temp_project / "ansible"
         playbook_dir.mkdir()
         playbook = playbook_dir / "site.yml"
-        playbook.write_text(
-            """---
+        playbook.write_text("""---
 - name: Test playbook
   hosts: localhost
   tasks:
     - name: Test task
       debug:
         msg: "Hello from Ansible"
-"""
-        )
+""")
 
         # Create inventory file
         inventory = playbook_dir / "inventory.ini"
-        inventory.write_text(
-            """[local]
+        inventory.write_text("""[local]
 localhost ansible_connection=local
-"""
-        )
+""")
 
         # Create ansible.cfg
         cfg = playbook_dir / "ansible.cfg"
-        cfg.write_text(
-            """[defaults]
+        cfg.write_text("""[defaults]
 inventory = inventory.ini
 host_key_checking = False
-"""
-        )
+""")
 
         # Test detection
         detector = ProjectCommandDetector(str(temp_project))
@@ -75,16 +69,14 @@ host_key_checking = False
         playbook_dir = temp_project / "ansible"
         playbook_dir.mkdir()
         playbook = playbook_dir / "site.yml"
-        playbook.write_text(
-            """---
+        playbook.write_text("""---
 - name: Test playbook
   hosts: localhost
   tasks:
     - name: Test task
       debug:
         msg: "Hello from Ansible"
-"""
-        )
+""")
 
         # Test execution with failure
         detector = ProjectCommandDetector(str(temp_project))

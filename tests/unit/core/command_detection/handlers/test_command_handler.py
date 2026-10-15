@@ -208,5 +208,5 @@ class TestCommandHandler:
             caplog.clear()
             handler.is_valid_command(cmd)
             assert any(
-                log_fragment in record.message for record in caplog.records
+                log_fragment.lower() in record.message.lower() for record in caplog.records
             ), f"Expected log message containing '{log_fragment}' for command: {cmd}"

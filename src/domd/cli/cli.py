@@ -88,16 +88,14 @@ def start_web_interface(args: argparse.Namespace) -> int:
     # Check if Node.js and npm are installed
     print("🔍 Checking for Node.js and npm...")
     if not _check_node_installed():
-        print(
-            """
+        print("""
 ❌ Node.js and npm are required to run the web interface.
    Please install them from https://nodejs.org/ and try again.
 
    On Ubuntu/Debian: sudo apt-get install nodejs npm
    On macOS:          brew install node
    On Windows:        Download from https://nodejs.org/
-        """
-        )
+        """)
         return 1
 
     # Get the directory of this file
@@ -261,10 +259,18 @@ def create_parser() -> argparse.ArgumentParser:
 
     # Common arguments for scan command
     scan_parser.add_argument(
-        "path",
+        "positional_path",
+        metavar="path",
         nargs="?",
-        default=".",
+        default=None,
         help="Path to the project directory (default: current directory)",
+    )
+    scan_parser.add_argument(
+        "--path",
+        "-p",
+        dest="path",
+        default=None,
+        help="Path to the project directory",
     )
     scan_parser.add_argument(
         "--exclude",
@@ -329,9 +335,6 @@ def create_parser() -> argparse.ArgumentParser:
         "--quiet", "-q", action="store_true", help="Suppress all output except errors"
     )
 
-    # Set default command to scan for backward compatibility
-    parser.set_defaults(command="scan")
-
     return parser
 
 
@@ -362,8 +365,14 @@ def validate_args(args: argparse.Namespace) -> Optional[str]:
     ):
         return "Cannot use --quiet and --verbose together"
 
+    # Resolve path if positional_path was given
+    if getattr(args, "positional_path", None) and not getattr(args, "path", None):
+        args.path = args.positional_path
+    if not getattr(args, "path", None):
+        args.path = "."
+
     # Only validate path if it exists in args (i.e., for scan command)
-    if hasattr(args, "path"):
+    if hasattr(args, "path") and args.path is not None:
         project_path = Path(args.path)
         if not project_path.exists():
             return f"Project path does not exist: {project_path}"
@@ -405,7 +414,7 @@ def handle_generate_ignore(project_path: Path, ignore_file: str) -> int:
             ignore_file=ignore_file,
         )
         detector.generate_domdignore_template()
-        print(f"✅ Generated {ignore_file} template file")
+        print(f"✅ Generated ignore file: {ignore_file} template file")
         print(f"💡 Edit {ignore_file} to customize ignored commands")
         return 0
     except Exception as e:
@@ -422,6 +431,7 @@ def handle_show_ignored(
 ) -> int:
     """Handle --show-ignored option."""
     try:
+        print("\n🚫 Ignored commands:")
         # Tymczasowo używamy starego kodu
         detector = ProjectCommandDetector(
             project_path=project_path,
@@ -485,6 +495,12 @@ def main() -> int:
         quiet = getattr(args, "quiet", False)
         setup_logging(verbose=verbose, quiet=quiet)
 
+        # Resolve path if positional_path was given
+        if getattr(args, "positional_path", None) and not getattr(args, "path", None):
+            args.path = args.positional_path
+        if not getattr(args, "path", None):
+            args.path = "."
+
         # Get the project path with a default of current directory if not provided
         project_path = Path(getattr(args, "path", ".")).resolve()
 
@@ -502,27 +518,27 @@ def main() -> int:
                     if line and not line.startswith("#"):
                         ignore_patterns.append(line)
 
-            # Initialize services with default values if not provided
-            timeout = getattr(args, "timeout", 30)  # Default to 30 seconds
-            _ = getattr(args, "todo_file", "TODO.md")  # Used in other parts
-            _ = getattr(args, "script_file", "todo.sh")  # Used in other parts
-            _ = getattr(args, "ignore_file", ".doignore")  # Used in other parts
+        # Initialize services with default values if not provided
+        timeout = getattr(args, "timeout", 30)  # Default to 30 seconds
+        _ = getattr(args, "todo_file", "TODO.md")  # Used in other parts
+        _ = getattr(args, "script_file", "todo.sh")  # Used in other parts
+        _ = getattr(args, "ignore_file", ".doignore")  # Used in other parts
 
-            # Initialize command service
-            command_service = ApplicationFactory.create_command_service(
-                repository=repository,
-                executor=executor,
-                timeout=timeout,
-                ignore_patterns=ignore_patterns,
-            )
+        # Initialize command service
+        command_service = ApplicationFactory.create_command_service(
+            repository=repository,
+            executor=executor,
+            timeout=timeout,
+            ignore_patterns=ignore_patterns,
+        )
 
-            # Initialize report service with the correct parameters
-            report_service = ApplicationFactory.create_report_service(
-                repository=repository,
-                project_path=project_path,
-                todo_file=getattr(args, "todo_file", "TODO.md"),
-                done_file="DONE.md",  # Using default done file name
-            )
+        # Initialize report service with the correct parameters
+        report_service = ApplicationFactory.create_report_service(
+            repository=repository,
+            project_path=project_path,
+            todo_file=getattr(args, "todo_file", "TODO.md"),
+            done_file="DONE.md",  # Using default done file name
+        )
 
         # Inicjalizacja prezentera
         presenter = ApplicationFactory.create_command_presenter(repository)
@@ -575,9 +591,6 @@ def main() -> int:
         for command in commands:
             repository.add_command(command)
 
-        if not commands:
-            return 0
-
         # Handle dry-run mode
         if hasattr(args, "dry_run") and args.dry_run:
             if not getattr(
@@ -598,6 +611,9 @@ def main() -> int:
                     script_file=args.script_file,
                     ignore_file=args.ignore_file,
                 )
+            return 0
+
+        if not commands:
             return 0
 
         # Test commands with real-time updates

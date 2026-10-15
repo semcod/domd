@@ -112,32 +112,24 @@ def create_ansible_role(roles_dir: Union[str, Path], role_name: str) -> Dict[str
 
     # Create main.yml files
     tasks_main = role_path / "tasks" / "main.yml"
-    tasks_main.write_text(
-        f"""---
+    tasks_main.write_text(f"""---
 # tasks file for {role_name}
-"""
-    )
+""")
 
     handlers_main = role_path / "handlers" / "main.yml"
-    handlers_main.write_text(
-        f"""---
+    handlers_main.write_text(f"""---
 # handlers file for {role_name}
-"""
-    )
+""")
 
     defaults_main = role_path / "defaults" / "main.yml"
-    defaults_main.write_text(
-        f"""---
+    defaults_main.write_text(f"""---
 # defaults file for {role_name}
-"""
-    )
+""")
 
     vars_main = role_path / "vars" / "main.yml"
-    vars_main.write_text(
-        f"""---
+    vars_main.write_text(f"""---
 # vars file for {role_name}
-"""
-    )
+""")
 
     meta_main = role_path / "meta" / "main.yml"
     meta_content = """---

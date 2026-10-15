@@ -36,7 +36,7 @@ with patch(
     from domd.core.command_detection.handlers.command_handler import CommandHandler
 
 
-def test_commands(test_cases):
+def run_command_tests(test_cases):
     # Create a mock command runner
     command_runner = MockCommandRunner()
 
@@ -242,4 +242,4 @@ if __name__ == "__main__":
         ),
     ]
 
-    test_commands(test_cases)
+    run_command_tests(test_cases)

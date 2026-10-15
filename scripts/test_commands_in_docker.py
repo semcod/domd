@@ -2,6 +2,7 @@
 """
 Script to test commands in Docker and update .doignore with broken ones.
 """
+
 import os
 import subprocess
 import sys

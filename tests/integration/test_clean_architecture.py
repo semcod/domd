@@ -148,8 +148,7 @@ class CleanArchitectureIntegrationTest(unittest.TestCase):
         # Utwórz package.json
         package_json = self.project_path / "package.json"
         with open(package_json, "w") as f:
-            f.write(
-                """
+            f.write("""
             {
                 "name": "test-project",
                 "version": "1.0.0",
@@ -161,14 +160,12 @@ class CleanArchitectureIntegrationTest(unittest.TestCase):
                     "ignore-me": "should-be-ignored"
                 }
             }
-            """
-            )
+            """)
 
         # Utwórz README.md
         readme = self.project_path / "README.md"
         with open(readme, "w") as f:
-            f.write(
-                """
+            f.write("""
             # Test Project
 
             Run the following commands:
@@ -178,8 +175,7 @@ class CleanArchitectureIntegrationTest(unittest.TestCase):
             npm run test
             npm run broken
             ```
-            """
-            )
+            """)
 
     def create_domdignore_file(self):
         """
@@ -187,12 +183,10 @@ class CleanArchitectureIntegrationTest(unittest.TestCase):
         """
         domdignore = self.project_path / ".doignore"
         with open(domdignore, "w") as f:
-            f.write(
-                """
+            f.write("""
             # Ignore patterns
             *ignore*
-            """
-            )
+            """)
 
     def test_full_workflow(self):
         """

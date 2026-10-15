@@ -1029,3 +1029,5 @@ class ProjectCommandDetector:
         except Exception as e:
             logger.error(f"Error creating ignore file template: {e}")
             return False
+
+    generate_domdignore_template = generate_doignore_template

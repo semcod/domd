@@ -21,8 +21,7 @@ class TestCommandTesting(unittest.TestCase):
         self.doignore_path = self.temp_dir / ".doignore"
 
         # Create a simple .dodocker file
-        self.dodocker_path.write_text(
-            """# Test .dodocker file
+        self.dodocker_path.write_text("""# Test .dodocker file
 python:
   image: python:3.9-slim
   description: Python interpreter
@@ -32,8 +31,7 @@ python:
 echo:
   image: alpine:latest
   description: Simple echo command
-"""
-        )
+""")
 
         # Create an empty .doignore file
         self.doignore_path.touch()

@@ -18,33 +18,27 @@ class TestAnsibleDetection:
 
         # Create main playbook
         playbook = playbook_dir / "site.yml"
-        playbook.write_text(
-            """---
+        playbook.write_text("""---
 - name: Test playbook
   hosts: localhost
   tasks:
     - name: Test task
       debug:
         msg: "Hello from Ansible"
-"""
-        )
+""")
 
         # Create inventory file
         inventory = temp_project / "inventory.ini"
-        inventory.write_text(
-            """[local]
+        inventory.write_text("""[local]
 localhost ansible_connection=local
-"""
-        )
+""")
 
         # Create ansible.cfg
         cfg = temp_project / "ansible.cfg"
-        cfg.write_text(
-            """[defaults]
+        cfg.write_text("""[defaults]
 inventory = inventory.ini
 host_key_checking = False
-"""
-        )
+""")
 
         return temp_project
 
@@ -61,17 +55,14 @@ host_key_checking = False
         (role_path / "meta").mkdir()
 
         # Create main task file
-        (role_path / "tasks" / "main.yml").write_text(
-            """---
+        (role_path / "tasks" / "main.yml").write_text("""---
 - name: Example task
   debug:
     msg: "This is an example role"
-"""
-        )
+""")
 
         # Create meta/main.yml
-        (role_path / "meta" / "main.yml").write_text(
-            """---
+        (role_path / "meta" / "main.yml").write_text("""---
 galaxy_info:
   author: Test Author
   description: Test role
@@ -84,8 +75,7 @@ galaxy_info:
         - focal
   galaxy_tags:
     - testing
-"""
-        )
+""")
 
         return temp_project
 
@@ -150,14 +140,12 @@ galaxy_info:
         """Test detection of Ansible Galaxy commands."""
         # Create a requirements.yml file
         requirements = temp_project / "requirements.yml"
-        requirements.write_text(
-            """---
+        requirements.write_text("""---
 - src: geerlingguy.docker
   version: "4.1.1"
 - src: geerlingguy.pip
   version: "2.0.0"
-"""
-        )
+""")
 
         detector = ProjectCommandDetector(str(temp_project))
         commands = detector.scan_project()

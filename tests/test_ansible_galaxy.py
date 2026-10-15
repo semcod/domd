@@ -20,15 +20,13 @@ class TestAnsibleGalaxy:
 
         # Create galaxy.yml
         galaxy_yml = collection_path / "galaxy.yml"
-        galaxy_yml.write_text(
-            """---
+        galaxy_yml.write_text("""---
 namespace: my_namespace
 name: my_collection
 version: 1.0.0
 readme: README.md
 description: My test collection
-"""
-        )
+""")
 
         # Test detection
         detector = ProjectCommandDetector(str(temp_project))
@@ -58,12 +56,10 @@ description: My test collection
 
         # Create requirements.yml
         requirements = temp_project / "requirements.yml"
-        requirements.write_text(
-            """---
+        requirements.write_text("""---
 - src: geerlingguy.docker
   version: "4.1.1"
-"""
-        )
+""")
 
         # Test execution
         detector = ProjectCommandDetector(str(temp_project))
@@ -94,12 +90,10 @@ description: My test collection
 
         # Create requirements.yml
         requirements = temp_project / "requirements.yml"
-        requirements.write_text(
-            """---
+        requirements.write_text("""---
 - src: nonexistent.role
   version: "1.0.0"
-"""
-        )
+""")
 
         # Test execution
         detector = ProjectCommandDetector(str(temp_project))
@@ -118,13 +112,11 @@ description: My test collection
 
         # Create meta/main.yml with dependencies
         meta_yml = meta_path / "main.yml"
-        meta_yml.write_text(
-            """---
+        meta_yml.write_text("""---
 dependencies:
   - { role: geerlingguy.docker, docker_users: ['ubuntu'] }
   - { role: geerlingguy.pip }
-"""
-        )
+""")
 
         # Test detection
         detector = ProjectCommandDetector(str(temp_project))

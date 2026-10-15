@@ -132,8 +132,22 @@ class EnvironmentDetector:
         if not self.docker_client:
             raise RuntimeError("Docker is not available")
 
-        # Default volumes: mount project directory
-        volumes = volumes or {str(self.project_root): {"bind": "/app", "mode": "rw"}}
+        # Normalize volumes so both {host: '/container'} and {host: {'bind': '/container', 'mode': 'rw'}} work
+        normalized_volumes = {}
+        if volumes:
+            for host_path, container_spec in volumes.items():
+                if isinstance(container_spec, str):
+                    mode = "rw"
+                    bind = container_spec
+                    if ":" in container_spec:
+                        parts = container_spec.split(":")
+                        bind = parts[0]
+                        mode = parts[1]
+                    normalized_volumes[host_path] = {"bind": bind, "mode": mode}
+                elif isinstance(container_spec, dict):
+                    normalized_volumes[host_path] = container_spec
+        else:
+            normalized_volumes = {str(self.project_root): {"bind": "/app", "mode": "rw"}}
 
         # Default working directory
         workdir = workdir or "/app"
@@ -144,12 +158,12 @@ class EnvironmentDetector:
         container_kwargs = {
             "image": image,
             "command": ["/bin/sh", "-c", command],
-            "volumes": volumes or {},
+            "volumes": normalized_volumes,
             "environment": environment or {},
             "working_dir": workdir or "/app",
             "detach": True,
-            "tty": True,
-            "remove": True,
+            "tty": False,
+            "remove": False,
             "stdout": True,
             "stderr": True,
             "privileged": privileged,
@@ -161,14 +175,20 @@ class EnvironmentDetector:
 
         try:
             container: Container = self.docker_client.containers.run(**container_kwargs)
-
-            # Stream logs
-            for line in container.logs(stream=True, follow=True):
-                print(line.decode().strip())
-
-            # Wait for container to finish and get exit code
-            result = container.wait()
-            return result.get("StatusCode", 1)
+            try:
+                result = container.wait()
+                try:
+                    logs = container.logs()
+                    if logs:
+                        print(logs.decode(errors="replace").strip())
+                except Exception:
+                    pass
+                return result.get("StatusCode", 1)
+            finally:
+                try:
+                    container.remove(force=True)
+                except Exception:
+                    pass
 
         except docker.errors.ContainerError as e:
             print(f"Docker container failed: {e}")

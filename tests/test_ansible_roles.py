@@ -79,12 +79,10 @@ galaxy_info:
         role_name = "example_role"
         role_path = roles_dir / role_name
         (role_path / "tasks").mkdir(parents=True)
-        (role_path / "tasks" / "main.yml").write_text(
-            """---
+        (role_path / "tasks" / "main.yml").write_text("""---
 - debug:
     msg: "Role task"
-"""
-        )
+""")
 
         # Create playbook that uses the role
         playbook = temp_project / "site.yml"

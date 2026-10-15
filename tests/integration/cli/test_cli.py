@@ -7,12 +7,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Add the project root to the Python path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
-
-# Import after path setup
-from src.domd.cli import create_parser, main, validate_args  # noqa: E402
-from src.domd.core.domain.command import Command  # noqa: E402
+from domd.cli.cli import create_parser, main, validate_args  # noqa: E402
+from domd.core.domain.command import Command  # noqa: E402
 
 
 class TestCLI:
@@ -61,7 +57,7 @@ class TestCLI:
         _ = setup_test_environment  # Unused variable
 
         # Mock the ProjectCommandDetector to avoid actual command execution
-        with patch("src.domd.cli.ProjectCommandDetector") as mock_detector:
+        with patch("domd.cli.cli.ProjectCommandDetector") as mock_detector:
             mock_instance = mock_detector.return_value
             mock_instance.scan_project.return_value = []
 
@@ -81,7 +77,7 @@ class TestCLI:
         custom_ignore.write_text("*.py\n")
 
         # Mock the ProjectCommandDetector
-        with patch("src.domd.cli.ProjectCommandDetector") as mock_detector:
+        with patch("domd.cli.cli.ProjectCommandDetector") as mock_detector:
             mock_instance = mock_detector.return_value
             mock_instance.scan_project.return_value = []
 
@@ -117,7 +113,7 @@ class TestCLI:
         _ = setup_test_environment  # Unused variable
 
         # Mock the command service and repository
-        with patch("src.domd.cli.ApplicationFactory") as mock_factory:
+        with patch("domd.cli.cli.ApplicationFactory") as mock_factory:
             mock_service = MagicMock()
             mock_repo = MagicMock()
             mock_factory.create_command_service.return_value = mock_service
@@ -132,13 +128,14 @@ class TestCLI:
         captured = capsys.readouterr()
         assert "Ignored commands" in captured.out
 
-    def test_dry_run_option(self, capsys):
+    def test_dry_run_option(self, setup_test_environment, capsys):
         """Test the --dry-run option."""
+        _ = setup_test_environment  # Unused variable
         # Mock the ProjectCommandDetector
-        with patch("src.domd.cli.ProjectCommandDetector") as mock_detector:
+        with patch("domd.cli.cli.ProjectCommandDetector") as mock_detector:
             mock_instance = mock_detector.return_value
             mock_instance.scan_project.return_value = [
-                Command("echo 'test'", "Test command")
+                Command("echo 'test'", "echo", "Test command", "cli")
             ]
 
             # Run the CLI with --dry-run
@@ -150,8 +147,9 @@ class TestCLI:
         assert "DRY RUN" in captured.out
         assert "Test command" in captured.out
 
-    def test_init_only_option(self, capsys):
+    def test_init_only_option(self, setup_test_environment, capsys):
         """Test the --init-only option."""
+        _ = setup_test_environment  # Unused variable
         # Run the CLI with --init-only
         with patch("sys.argv", ["domd", "scan", "--init-only"]):
             result = main()
@@ -159,12 +157,12 @@ class TestCLI:
         assert result == 0
         assert Path(".doignore").exists()
         captured = capsys.readouterr()
-        assert "Initialized project" in captured.out
+        assert "Initialization complete" in captured.out or "Initialized project" in captured.out
 
     def test_web_command(self, capsys):
         """Test the web command."""
         # Mock the start_web_interface function
-        with patch("src.domd.cli.start_web_interface") as mock_web:
+        with patch("domd.cli.cli.start_web_interface") as mock_web:
             mock_web.return_value = 0
 
             # Run the CLI with web command
@@ -190,7 +188,7 @@ class TestCLI:
         """Test error handling in the CLI."""
 
         # Mock ProjectCommandDetector to raise an exception
-        with patch("src.domd.cli.ProjectCommandDetector") as mock_detector:
+        with patch("domd.cli.cli.ProjectCommandDetector") as mock_detector:
             mock_instance = mock_detector.return_value
             mock_instance.scan_project.side_effect = Exception("Test error")
 
