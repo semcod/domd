@@ -1,0 +1,7 @@
+advanced:
+  auto_update_config: false
+strategies:
+  python:
+    test: python3 -c "import sys; sys.path.insert(0, 'src'); import domd"
+  nodejs:
+    publish_enabled: false
