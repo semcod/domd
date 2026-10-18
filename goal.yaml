@@ -4,6 +4,7 @@ strategies:
   python:
     test: python3 -c "import pathlib; assert pathlib.Path('pyproject.toml').exists()"
     publish_enabled: true
+    publish: twine upload --skip-existing dist/*{version}*
   nodejs:
     publish_enabled: false
     test: 'true'
