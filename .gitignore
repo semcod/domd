@@ -170,3 +170,5 @@ package-lock.json
 /.subactor/receipts/
 /.subactor/cache/
 /.subactor/snapshots/
+.koru/
+.planfile/
