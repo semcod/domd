@@ -5,3 +5,38 @@ strategies:
     test: python3 -c "import sys; sys.path.insert(0, 'src'); import domd"
   nodejs:
     publish_enabled: false
+    test: 'true'
+    build: 'true'
+  rust:
+    test: 'true'
+    build: 'true'
+    publish_enabled: false
+  go:
+    test: 'true'
+    build: 'true'
+    publish_enabled: false
+  ruby:
+    test: 'true'
+    build: 'true'
+    publish_enabled: false
+  php:
+    test: 'true'
+    build: 'true'
+    publish_enabled: false
+  dotnet:
+    test: 'true'
+    build: 'true'
+    publish_enabled: false
+  java:
+    test: 'true'
+    build: 'true'
+    publish_enabled: false
+project:
+  type:
+  - python
+versioning:
+  files:
+  - VERSION
+  - pyproject.toml:version
+  - package.json:version
+  - src/domd/__init__.py:__version__
